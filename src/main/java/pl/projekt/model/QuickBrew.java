@@ -11,12 +11,11 @@ public class QuickBrew extends CoffeeMachine {
 
 
 
-    public static CoffeeType irish() {
-        CoffeeType irish = CoffeeType.ISRISH;
-        coffeeTypes.put(coffeeTypes.size()+1F, irish);
-        return irish;
-    }
 
+    public CoffeeType makeIrishCoffee() {
+        System.out.println("Making Irish Coffee");
+        return CoffeeType.IRISH;
+    }
 
     @Override
     public void addWater(double waterAmount) {
@@ -40,7 +39,6 @@ public class QuickBrew extends CoffeeMachine {
             milkAmount = (int) convertMillilitersToPints(milkAmount);
         }
         super.addMilk(milkAmount);
-
     }
 
     @Override
@@ -55,9 +53,7 @@ public class QuickBrew extends CoffeeMachine {
         return (float) Math.ceil(liters / 0.47318);
     }
 
-
     private float convertMillilitersToPints(float milliliters) {
         return convertLitersToPints(milliliters / 1000);
     }
 }
-

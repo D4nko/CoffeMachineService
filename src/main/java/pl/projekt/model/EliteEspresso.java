@@ -1,44 +1,64 @@
 package pl.projekt.model;
 
+import lombok.Getter;
+import pl.projekt.Enums.CoffeeSize;
 import pl.projekt.Enums.CoffeeType;
-import pl.projekt.interfaces.IPreheatCup;
+import pl.projekt.service.CoffeeHistoryAnalyzer;
 
-public class EliteEspresso extends CoffeeMachine implements IPreheatCup {
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-    private int beansAmount = 100;
-    private static final float MAX_WATER_LEVEL_ELITE = 2.5f;
-    private static final float WATER_AMOUNT_FOR_LATTE_ELITE = 0.04f;
+public class EliteEspresso extends CoffeeMachine {
+    @Getter
+    private double coffeeBeansAmount; // Ilość dosypanych ziaren kawy
+    private List<CoffeeHistory> coffeeHistory;
 
     public EliteEspresso() {
-        coffeeTypes.put(1F, CoffeeType.ESPRESSO);
-        coffeeTypes.put(2F, CoffeeType.CAPPUCCINO);
-        coffeeTypes.put(3F, CoffeeType.LATTE);
-        coffeeTypes.put(4F, CoffeeType.AMERICANO);
-        coffeeTypes.put(5F, CoffeeType.FLATWHITE);
-        waterLevel = MAX_WATER_LEVEL_ELITE;
-    }
-
-    public void addCoffeeBeans(int amount) {
-        beansAmount += amount;
-        System.out.println("Dolano " + amount + " ziaren kawy. Aktualna ilość ziaren kawy: " + beansAmount);
+        super();
+        this.coffeeBeansAmount = 0.0;
+        this.coffeeHistory = new ArrayList<>();
     }
 
     @Override
+    public void analyze() {
+        CoffeeHistoryAnalyzer.analyze(coffeeHistory);
+    }
+
+    public void setCoffeeBeansAmount(double amount) {
+        this.coffeeBeansAmount = amount;
+    }
+
     public void preheatCup() {
-        boolean cupPreheated = true;
-        System.out.println("Filiżanka została podgrzana.");
-    }
-
-    @Override
-    public void makeCoffee() {
-        super.makeCoffee();
-        if (coffeeType == CoffeeType.LATTE) {
-            waterLevel -= WATER_AMOUNT_FOR_LATTE_ELITE;
-        }
+        System.out.println("Podgrzewanie filiżanki...");
+        // Logika podgrzewania filiżanki
     }
 
     @Override
     public void showStatus() {
         super.showStatus();
+        System.out.println("Ilość ziaren kawy: " + coffeeBeansAmount + "g");
     }
+
+    @Override
+    public void makeCoffee(CoffeeType coffeeType, CoffeeSize coffeeSize, double waterAmount, int milkAmount) {
+        preheatCup();
+        super.makeCoffee(coffeeType, coffeeSize, waterAmount, milkAmount);
+        saveCoffeeHistory(coffeeType, coffeeSize, waterAmount, milkAmount);
+    }
+
+    public List<CoffeeHistory> getRecentCoffeeHistory() {
+        return coffeeHistory;
+    }
+
+    private void saveCoffeeHistory(CoffeeType coffeeType, CoffeeSize coffeeSize, double waterAmount, int milkAmount) {
+        CoffeeHistory entry = new CoffeeHistory(coffeeType, coffeeSize, LocalDateTime.now(), waterAmount, milkAmount,true);
+        coffeeHistory.add(entry);
+
+        // Ogranicz historię do ostatnich 30 wpisów
+        if (coffeeHistory.size() > 30) {
+            coffeeHistory.remove(0);
+        }
+    }
+
 }

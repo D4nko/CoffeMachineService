@@ -1,6 +1,7 @@
 package pl.projekt.model;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import pl.projekt.Enums.CoffeeSize;
 import pl.projekt.Enums.CoffeeType;
 
@@ -8,20 +9,25 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@ToString
+
 public class CoffeeHistory {
-    private LocalDateTime preparationDate;
     private CoffeeType coffeeType;
     private CoffeeSize coffeeSize;
-    private float waterAmount;
+    private LocalDateTime preparationDate;
+    private double waterAmount;
     private int milkAmount;
-    private boolean cupPreheated;
+    private boolean isCupPreheated;
 
-    // Static method for creating a new instance
-    public static CoffeeHistory createCoffeeHistory(LocalDateTime preparationDate, CoffeeType coffeeType,
-                                                    CoffeeSize coffeeSize, float waterAmount, int milkAmount,
-                                                    boolean cupPreheated) {
-        return new CoffeeHistory(preparationDate, coffeeType, coffeeSize, waterAmount, milkAmount, cupPreheated);
+    public CoffeeHistory(CoffeeType coffeeType, CoffeeSize coffeeSize, LocalDateTime preparationDate, double waterAmount, int milkAmount, boolean isCupPreheated) {
+        this.coffeeType = coffeeType;
+        this.coffeeSize = coffeeSize;
+        this.preparationDate = preparationDate;
+        this.waterAmount = waterAmount;
+        this.milkAmount = milkAmount;
+        this.isCupPreheated = isCupPreheated;
+    }
+
+    public boolean isCupPreheated() {
+        return isCupPreheated;
     }
 }

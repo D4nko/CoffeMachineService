@@ -1,6 +1,5 @@
 package pl.projekt.service;
 
-import lombok.Getter;
 import pl.projekt.Enums.CoffeeSize;
 import pl.projekt.Enums.CoffeeType;
 import pl.projekt.model.CoffeeHistory;
@@ -8,32 +7,27 @@ import pl.projekt.model.CoffeeHistory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-@Getter
+
 public class CoffeeHistoryManager {
+    private List<CoffeeHistory> coffeeHistoryList;
 
-    private List<CoffeeHistory> recentCoffeeHistory = new ArrayList<>();
-    private List<CoffeeHistory> coffeeHistory = new ArrayList<>();
+    public CoffeeHistoryManager() {
+        this.coffeeHistoryList = new ArrayList<>();
+    }
 
-    public void addToCoffeeHistory(CoffeeType coffeeType, CoffeeSize coffeeSize, float waterAmount, int milkAmount, boolean cupPreheated) {
-        CoffeeHistory coffeeHistory = CoffeeHistory.createCoffeeHistory(LocalDateTime.now(), coffeeType, coffeeSize, waterAmount, milkAmount, cupPreheated);
+    public void addCoffeeHistory(LocalDateTime preparationDate, CoffeeType coffeeType, CoffeeSize coffeeSize, double waterAmount, int milkAmount, boolean isCupPreheated) {
+        CoffeeHistory coffeeHistory = new CoffeeHistory(coffeeType, coffeeSize, preparationDate, waterAmount, milkAmount, isCupPreheated);
+        coffeeHistoryList.add(coffeeHistory);
+        limitHistorySize();
+    }
 
-        recentCoffeeHistory.add(coffeeHistory);
-        if (recentCoffeeHistory.size() > 30) {
-            recentCoffeeHistory.remove(0);
+    private void limitHistorySize() {
+        if (coffeeHistoryList.size() > 30) {
+            coffeeHistoryList.remove(0);
         }
     }
 
-    public void analyse() {
-
-
-        int totalCoffees = coffeeHistory.size();
-        double totalWaterConsumed = coffeeHistory.stream().mapToDouble(CoffeeHistory::getWaterAmount).sum();
-        int totalMilkConsumed = coffeeHistory.stream().mapToInt(CoffeeHistory::getMilkAmount).sum();
-
-        System.out.println("Analysis Results:");
-        System.out.println("Total Coffees: " + totalCoffees);
-        System.out.println("Total Water Consumed: " + totalWaterConsumed + "ml");
-        System.out.println("Total Milk Consumed: " + totalMilkConsumed + "ml");
-
+    public List<CoffeeHistory> getRecentCoffeeHistory() {
+        return new ArrayList<>(coffeeHistoryList);
     }
 }
